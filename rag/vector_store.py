@@ -2,10 +2,11 @@ from typing import List
 from langchain_openai import OpenAIEmbeddings
 from langchain_chroma import Chroma
 from rag.loader import load_and_chunk_docs
+import os
 
 def create_vector_store(chunks: List[str], persist_dir: str = "chroma_db") -> Chroma:
     """Create and persist a Chroma vector store from documents in the specified directory."""
-    embedding_model = OpenAIEmbeddings()
+    embedding_model = OpenAIEmbeddings(api_key=os.getenv("OPENAI_API_KEY"))
     vector_store = Chroma.from_texts(
         texts = chunks, 
         embedding = embedding_model, 
@@ -16,7 +17,7 @@ def create_vector_store(chunks: List[str], persist_dir: str = "chroma_db") -> Ch
 
 def load_vector_store(persist_dir: str = "chroma_db") -> Chroma:
     """Load documents from a directory, chunk them, and create a vector store."""
-    embedding_model = OpenAIEmbeddings()
+    embedding_model = OpenAIEmbeddings(api_key=os.getenv("OPENAI_API_KEY"))
     vector_store = Chroma(
         embedding_function = embedding_model, 
         persist_directory = persist_dir
